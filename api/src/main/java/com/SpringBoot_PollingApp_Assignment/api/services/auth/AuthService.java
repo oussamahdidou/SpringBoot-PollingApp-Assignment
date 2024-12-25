@@ -1,35 +1,34 @@
 package com.SpringBoot_PollingApp_Assignment.api.services.auth;
 
 import com.SpringBoot_PollingApp_Assignment.api.models.Role;
-import com.SpringBoot_PollingApp_Assignment.api.models.Utilisateur;
+import com.SpringBoot_PollingApp_Assignment.api.models.User;
+import com.SpringBoot_PollingApp_Assignment.api.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.example.demo.repositories.UtilisateurRepository;
 
 @Service
 public class AuthService implements UserDetailsService {
     @Autowired
 
-    private final UtilisateurRepository utilisateurRepository;
+    private final UserRepository userRepository;
 
-    public AuthService(UtilisateurRepository utilisateurRepository) {
-        this.utilisateurRepository = utilisateurRepository;
+    public AuthService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Utilisateur utilisateur = utilisateurRepository.findByNom(username).orElseThrow();
-        return new User(utilisateur.getNom(), utilisateur.getMotDePasse(), mapRolesToAuthority(utilisateur.getRoles()));
+        User user = userRepository.findByNom(username).orElseThrow();
+        return new org.springframework.security.core.userdetails.User(user.getNom(), user.getMotDePasse(), mapRolesToAuthority(user.getRoles())) {
+        };
 
     }
 
